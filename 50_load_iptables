@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Workaround for https://github.com/moby/moby/issues/34337
+
+initialize_iptables_in_docker() {
+	for t in nat mangle filter; do
+		/usr/sbin/iptables -t $t -nL >/dev/null 2>&1
+		/usr/sbin/ip6tables -t $t -nL >/dev/null 2>&1
+	done
+}
+
+boot_hook_add preinit_main initialize_iptables_in_docker
